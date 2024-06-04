@@ -16,6 +16,7 @@ import "./library/get-game-by-object-id";
 import "./library/get-library";
 import "./library/open-game";
 import "./library/open-game-installer";
+import "./library/update-executable-path";
 import "./library/remove-game";
 import "./library/remove-game-from-library";
 import "./misc/open-external";

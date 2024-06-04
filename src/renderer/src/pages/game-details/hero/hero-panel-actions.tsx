@@ -1,4 +1,4 @@
-import { NoEntryIcon, PlusCircleIcon } from "@primer/octicons-react";
+import { GearIcon, NoEntryIcon, PlusCircleIcon } from "@primer/octicons-react";
 
 import { BinaryNotFoundModal } from "../../shared-modals/binary-not-found-modal";
 
@@ -10,11 +10,13 @@ import { useTranslation } from "react-i18next";
 import * as styles from "./hero-panel-actions.css";
 import { gameDetailsContext } from "../game-details.context";
 import { Downloader } from "@shared";
+import { GameOptionsModal } from "../modals/game-options-modal";
 
 export function HeroPanelActions() {
   const [toggleLibraryGameDisabled, setToggleLibraryGameDisabled] =
     useState(false);
   const [showBinaryNotFoundModal, setShowBinaryNotFoundModal] = useState(false);
+  const [showGameOptionsModal, setShowGameOptionsModal] = useState(false);
 
   const {
     resumeDownload,
@@ -106,11 +108,6 @@ export function HeroPanelActions() {
   const openGame = async () => {
     if (game) {
       if (game.executablePath) {
-        window.electron.openGame(game.id, game.executablePath);
-        return;
-      }
-
-      if (game?.executablePath) {
         window.electron.openGame(game.id, game.executablePath);
         return;
       }
@@ -233,6 +230,25 @@ export function HeroPanelActions() {
               visible={showBinaryNotFoundModal}
               onClose={() => setShowBinaryNotFoundModal(false)}
             />
+
+            <GameOptionsModal
+              visible={showGameOptionsModal}
+              game={game}
+              onClose={() => {
+                setShowGameOptionsModal(false);
+              }}
+              selectGameExecutable={selectGameExecutable}
+            />
+            <Button
+              onClick={() => {
+                setShowGameOptionsModal(true);
+              }}
+              theme="outline"
+              disabled={deleting}
+              className={styles.heroPanelAction}
+            >
+              <GearIcon />
+            </Button>
 
             <Button
               onClick={openGameInstaller}

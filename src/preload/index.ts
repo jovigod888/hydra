@@ -73,6 +73,8 @@ contextBridge.exposeInMainWorld("electron", {
       shop,
       executablePath
     ),
+  updateExecutablePath: (id: number, executablePath: string) =>
+    ipcRenderer.invoke("updateExecutablePath", id, executablePath),
   getLibrary: () => ipcRenderer.invoke("getLibrary"),
   openGameInstaller: (gameId: number) =>
     ipcRenderer.invoke("openGameInstaller", gameId),
