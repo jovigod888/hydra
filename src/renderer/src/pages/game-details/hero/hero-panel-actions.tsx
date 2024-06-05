@@ -79,13 +79,11 @@ export function HeroPanelActions() {
       if (game) {
         await removeGameFromLibrary(game.id);
       } else {
-        const gameExecutablePath = await selectGameExecutable();
-
         await window.electron.addGameToLibrary(
           objectID!,
           gameTitle,
           "steam",
-          gameExecutablePath
+          null
         );
       }
 
@@ -224,7 +222,25 @@ export function HeroPanelActions() {
   if (game) {
     return (
       <>
-        {game?.progress === 1 ? (
+        <GameOptionsModal
+          visible={showGameOptionsModal}
+          game={game}
+          onClose={() => {
+            setShowGameOptionsModal(false);
+          }}
+          selectGameExecutable={selectGameExecutable}
+        />
+        <Button
+          onClick={() => {
+            setShowGameOptionsModal(true);
+          }}
+          theme="outline"
+          disabled={deleting}
+          className={styles.heroPanelAction}
+        >
+          <GearIcon />
+        </Button>
+        {game?.progress === 1 && game?.folderName && (
           <>
             <BinaryNotFoundModal
               visible={showBinaryNotFoundModal}
@@ -259,9 +275,9 @@ export function HeroPanelActions() {
               {t("install")}
             </Button>
           </>
-        ) : (
-          toggleGameOnLibraryButton
         )}
+
+        {game?.progress !== 1 && toggleGameOnLibraryButton}
 
         {isGameRunning ? (
           <Button

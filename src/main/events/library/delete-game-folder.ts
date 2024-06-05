@@ -29,22 +29,34 @@ const deleteGameFolder = async (
       game.folderName
     );
 
-    if (fs.existsSync(folderPath)) {
-      return new Promise((resolve, reject) => {
-        fs.rm(
-          folderPath,
-          { recursive: true, force: true, maxRetries: 5, retryDelay: 200 },
-          (error) => {
-            if (error) {
-              logger.error(error);
-              reject();
-            }
-
-            resolve();
-          }
-        );
-      });
+    if (!fs.existsSync(folderPath)) {
+      await gameRepository.update(
+        { id: gameId },
+        { downloadPath: null, folderName: null }
+      );
     }
+
+    console.log("folder exists");
+    return new Promise<void>((resolve, reject) => {
+      fs.rm(
+        folderPath,
+        { recursive: true, force: true, maxRetries: 5, retryDelay: 200 },
+        (error) => {
+          if (error) {
+            logger.error(error);
+            reject();
+          }
+
+          resolve();
+        }
+      );
+    }).then(async () => {
+      console.log("resolved");
+      await gameRepository.update(
+        { id: gameId },
+        { downloadPath: null, folderName: null }
+      );
+    });
   }
 };
 
